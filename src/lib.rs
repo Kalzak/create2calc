@@ -1,5 +1,4 @@
 use ethereum_types::{H160, H256};
-use std::str::FromStr;
 
 mod create2;
 
@@ -20,27 +19,17 @@ pub enum Code {
     Bytes(Vec<u8>)
 }
 
-pub fn calc_create2_address(
-    sender: &Sender,
-    salt: &Salt,
-    code: &Code
+pub fn calc_create2_address<T: AsRef<[u8]>>(
+    sender: T,
+    salt: T,
+    code: T,
 ) -> Vec<u8> {
-    let sender_formatted: H160 = match sender {
-        Sender::Str(s) => H160::from_str(s).expect("Invalid address string"),
-        Sender::H160(s) => *s,
-        Sender::Bytes(s) => H160::from_slice(s.as_slice())
-    };
 
-    let salt_formatted: H256 = match salt {
-        Salt::Str(s) => H256::from_str(s).expect("Invalid salt string"),
-        Salt::H256(s) => *s,
-        Salt::Bytes(s) => H256::from_slice(s.as_slice())
-    };
+    let sender_formatted = H160::from_slice(sender.as_ref());
 
-    let code_formatted: Vec<u8> = match code {
-        Code::Str(c) => hex::decode(&c[2..]).expect("Invalid code"),
-        Code::Bytes(c) => c.clone()
-    };
+    let salt_formatted = H256::from_slice(salt.as_ref());
+
+    let code_formatted = code.as_ref().to_vec();
 
     create2::calc_create2_address(sender_formatted, salt_formatted, code_formatted)
 }
