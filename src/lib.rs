@@ -2,27 +2,10 @@ use ethereum_types::{H160, H256};
 
 mod create2;
 
-pub enum Sender {
-    Str(String),
-    H160(H160),
-    Bytes(Vec<u8>)
-}
-
-pub enum Salt {
-    Str(String),
-    H256(H256),
-    Bytes(Vec<u8>)
-}
-
-pub enum Code {
-    Str(String),
-    Bytes(Vec<u8>)
-}
-
-pub fn calc_create2_address<T: AsRef<[u8]>>(
+pub fn calc_create2_address<T: AsRef<[u8]>, U: AsRef<[u8]>, V: AsRef<[u8]>>(
     sender: T,
-    salt: T,
-    code: T,
+    salt: U,
+    code: V,
 ) -> Vec<u8> {
 
     let sender_formatted = H160::from_slice(sender.as_ref());
