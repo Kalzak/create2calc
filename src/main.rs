@@ -1,16 +1,51 @@
+#![allow(unused)]
+
 use hex;
-use ethereum_types::H256;
+use clap::Parser;
+
+#[derive(Parser)]
+struct Cli {
+    sender: String,
+    salt: String,
+    code: String
+}
 
 fn main() {
+    let mut args = Cli::parse();
+
+    process_args(&mut args);
     
-    // Sender can be Vec<u8> or H160
-    let sender = hex::decode("f8e81D47203A594245E36C48e151709F0C19fBe8").unwrap();
-    // Salt can be Vec<u8> or H256
-    let salt = H256::from_slice(&hex::decode("800e2ebd330b3c3a1b15462bc4b4f4f87c43f4e4ad30f76459c88ab9d3af3ce3").unwrap());
-    // Code most be Vec<u8>
-    let code = hex::decode("600b8060093d393df360026003015952596000f3").unwrap();
+    let sender = hex::decode(args.sender).unwrap();
+    let salt = hex::decode(args.salt).unwrap();
+    let code = hex::decode(args.code).unwrap();
 
     let deployed_address = create2calc::calc_create2_address(sender, salt, code);
 
     println!("0x{}", hex::encode(deployed_address));
+}
+
+fn process_args(args: &mut Cli) {
+    // Remove the hex "0x" prepend if exists
+    remove_hex_prepend(&mut args.sender);
+    remove_hex_prepend(&mut args.salt);
+    remove_hex_prepend(&mut args.code);
+
+    // Pad sender and salt string if necessary
+    zero_pad_arg(&mut args.sender, 160/4);
+    zero_pad_arg(&mut args.salt, 256/4);
+}
+
+fn remove_hex_prepend(arg: &mut String) {
+    if arg.starts_with("0x") {
+        arg.remove(0);
+        arg.remove(0);
+    }
+}
+
+fn zero_pad_arg(arg: &mut String, desired_length: usize) {
+    let arg_length = arg.len();
+    if arg_length < desired_length {
+        let zeroes = "0".repeat(desired_length - arg_length);
+        arg.insert_str(0, &zeroes);
+    }
 }
