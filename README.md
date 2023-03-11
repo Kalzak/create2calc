@@ -1,19 +1,27 @@
 # Create2Calc
 
-A program to calculate the address of a contract to be deployed using `create2` given a `sender` address, `salt` and `initcode`.
-This is written in Rust and is my attempt to get more familiar with building Rust libraries.
+A program to calculate the address deployed from a contract using `create2`. This is written in Rust to encourage myself to become more familiar with the language and to learn its unique features. 
 
-Currently this program supports `String`, `Vec<u8>` or `H160/H256` (ethereum-types package) inputs.
+## How to use
 
-Example input
-```
-Address = 0xf8e81D47203A594245E36C48e151709F0C19fBe8
-Salt = 0x800e2ebd330b3c3a1b15462bc4b4f4f87c43f4e4ad30f76459c88ab9d3af3ce3
-Code = 0x600b8060093d393df360026003015952596000f3
+The program can be used as follows:
 
 ```
+./create2calc <address> <salt> <code>
+```
 
-The list of things I want to improve
+The arguments work with or without the hex `0x` prepend.
+
+## Improvements
+
+The following is a list of previously completed or future improvements:
+
 - [X] Enum arguments
-- [ ] Returned address type matches `sender` argument type
-- [ ] Add support for non-standard salt and address string lengths (eg: `0x1234`)
+- [X] Generic arguments
+- [X] Add support for non-standard arguments
+  - [X] Varying lengths for `address` and `salt`
+  - [X] Hex input `0x` prepend optional
+- [X] Add CLI interface rather than hardcoding values
+- [X] Move important logic into separate library
+- [ ] Add support for bruteforcing desired beginning or end hex sequences
+  - [ ] Multithreading
