@@ -78,7 +78,7 @@ fn main() {
 
             let deployed = create2calc::calc_create2_address(sender, salt, code);
 
-            println!("{}", hex::encode(deployed));
+            println!("Deployed address: {}", hex::encode(deployed));
 
         },
 
@@ -138,6 +138,7 @@ fn main() {
                         println!("Found: {}", deployed_str);
                         println!("For deployer: {}", hex::encode(sender.clone()));
                         println!("With init code: {}", hex::encode(code.clone()));
+                        println!("Using salt: {}", hex::encode(salt.clone()));
                         break;
                 }
             }
