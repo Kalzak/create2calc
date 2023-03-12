@@ -124,6 +124,7 @@ dependencies = [
  "clap",
  "ethereum-types",
  "hex",
+ "rand",
  "sha3",
 ]
 
