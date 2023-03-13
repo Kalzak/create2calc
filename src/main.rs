@@ -52,29 +52,29 @@ fn main() {
         Commands::Calc(calc_args) => {
 
             // Clone input so we can modify it
-            let mut sender_str = calc_args.address.clone();
-            let mut salt_str = calc_args.salt.clone();
-            let mut code_str = calc_args.code.clone();
+            let mut sender = calc_args.address.clone();
+            let mut salt = calc_args.salt.clone();
+            let mut code = calc_args.code.clone();
 
             // Remove the hex "0x" prepend if exists
-            remove_hex_prepend(&mut sender_str);
-            remove_hex_prepend(&mut salt_str);
-            remove_hex_prepend(&mut code_str);
+            remove_hex_prepend(&mut sender);
+            remove_hex_prepend(&mut salt);
+            remove_hex_prepend(&mut code);
     
             // Pad sender address and salt str if necessary
-            zero_pad_arg(&mut sender_str, 160/4);
-            zero_pad_arg(&mut salt_str, 256/4);
+            zero_pad_arg(&mut sender, 160/4);
+            zero_pad_arg(&mut salt, 256/4);
 
             // Pad code to even bytes if necessary
-            let code_len = code_str.len();
-            if code_str.len() % 2 == 1 {
-                zero_pad_arg(&mut code_str, code_len + 1); 
+            let code_len = code.len();
+            if code.len() % 2 == 1 {
+                zero_pad_arg(&mut code, code_len + 1); 
             }
 
             // Convert input to [u8; 32]
-            let sender = hex::decode(sender_str).unwrap();
-            let salt = hex::decode(salt_str).unwrap();
-            let code = hex::decode(code_str).unwrap();
+            let sender = hex::decode(sender).unwrap();
+            let salt = hex::decode(salt).unwrap();
+            let code = hex::decode(code).unwrap();
 
             let deployed = create2calc::calc_create2_address(sender, salt, code);
 
@@ -85,31 +85,31 @@ fn main() {
         // Find salt for particular address
         Commands::Find(find_args) => {
             // Clone input so we can modify it
-            let mut sender_str = find_args.address.clone();
-            let mut code_str = find_args.code.clone();
+            let mut sender = find_args.address.clone();
+            let mut code = find_args.code.clone();
 
             // Clone and process desired start and end address parts
             let (mut start, check_start) = process_address_part(find_args.start.clone());
             let (mut end, check_end) = process_address_part(find_args.end.clone());
 
             // Remove the hex "0x" prepend if exists
-            remove_hex_prepend(&mut sender_str);
-            remove_hex_prepend(&mut code_str);
+            remove_hex_prepend(&mut sender);
+            remove_hex_prepend(&mut code);
             remove_hex_prepend(&mut start);
             remove_hex_prepend(&mut end);
 
             // Pad sender address if necessary
-            zero_pad_arg(&mut sender_str, 160/4);
+            zero_pad_arg(&mut sender, 160/4);
 
             // Pad code to even bytes if necessary
-            let code_len = code_str.len();
-            if code_str.len() % 2 == 1 {
-                zero_pad_arg(&mut code_str, code_len + 1); 
+            let code_len = code.len();
+            if code.len() % 2 == 1 {
+                zero_pad_arg(&mut code, code_len + 1); 
             }
 
             // Convert input to [u8; 32]
-            let sender = hex::decode(sender_str).unwrap();
-            let code = hex::decode(code_str).unwrap();
+            let sender = hex::decode(sender).unwrap();
+            let code = hex::decode(code).unwrap();
 
             let mut rng = rand::thread_rng();
             let mut salt = [0_u8; 32];
